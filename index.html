@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf8" />
+  <title>HTML5 Geolocation Demo</title>
+</head>
+<body>
+<div id="console"></div>
+<script>
+function $(id) {
+  return document.getElementById(id)
+}
+
+if (navigator.geolocation) {
+  $('console').innerHTML = '定位中...'
+  var start = new Date()
+
+  navigator.geolocation.getCurrentPosition(function (data) {
+    var lat = data.coords.latitude  // 纬度
+      , lon = data.coords.longitude // 经度
+
+    var url = 'http://maps.googleapis.com/maps/api/staticmap?center=' + lat + ',' + lon + '&zoom=14&size=400x300&sensor=false'
+
+    var html = ''
+    html += '经度: ' + lon + '<br />'
+    html += '纬度: ' + lat + '<br />'
+    html += '用时: ' + (new Date() - start) + '毫秒<br />'
+    html += '<img src="' + url + '" />'
+    
+    $('console').innerHTML = html
+  }, function showError(error) {
+    switch(error.code) {
+    case error.PERMISSION_DENIED:
+      $('console').innerHTML = "错误: 用户拒绝。"
+      break
+    case error.POSITION_UNAVAILABLE:
+      $('console').innerHTML = "错误: 坐标不可用。"
+      break
+    case error.TIMEOUT:
+      $('console').innerHTML = "错误: 超时。"
+      break
+    case error.UNKNOWN_ERROR:
+      $('console').innerHTML = "未知错误。"
+      break
+    }
+  })
+} else {
+  $('console').innerHTML = '错误: 当前浏览器不支持 Geolocation API。'
+}
+</script>
+</body>
+</html>
